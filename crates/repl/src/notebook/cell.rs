@@ -628,6 +628,9 @@ impl Render for CodeCell {
                                                             .icon_size(IconSize::Small)
                                                             .tooltip(|window, cx| {
                                                                 Tooltip::text("Run All Above")(window, cx)
+                                                            })
+                                                            .on_click(|_, _, _| {
+                                                                println!("Run All Above")
                                                             }),
                                                     )
                                                     .child(
@@ -638,6 +641,9 @@ impl Render for CodeCell {
                                                         .icon_size(IconSize::Small)
                                                         .tooltip(|window, cx| {
                                                             Tooltip::text("Run All Below")(window, cx)
+                                                        })
+                                                        .on_click(|_, _, _| {
+                                                            println!("Run All Below")
                                                         }),
                                                     )
                                                     .child(
@@ -645,6 +651,9 @@ impl Render for CodeCell {
                                                             .icon_size(IconSize::Small)
                                                             .tooltip(|window, cx| {
                                                                 Tooltip::text("Split Cell")(window, cx)
+                                                            })
+                                                            .on_click(|_, _, _| {
+                                                                println!("Split Cell")
                                                             }),
                                                     )
                                                     .child(
@@ -655,6 +664,9 @@ impl Render for CodeCell {
                                                         .icon_size(IconSize::Small)
                                                         .tooltip(|window, cx| {
                                                             Tooltip::text("More Actions")(window, cx)
+                                                        })
+                                                        .on_click(|_, _, _| {
+                                                            println!("More Actions")
                                                         }),
                                                     )
                                                     .child(
@@ -662,6 +674,9 @@ impl Render for CodeCell {
                                                             .icon_size(IconSize::Small)
                                                             .tooltip(|window, cx| {
                                                                 Tooltip::text("Delete Cell")(window, cx)
+                                                            })
+                                                            .on_click(|_, _, _| {
+                                                                println!("Delete Cell")
                                                             }),
                                                     ),
                                             )

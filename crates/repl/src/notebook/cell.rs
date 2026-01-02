@@ -6,12 +6,12 @@ use futures::future::Shared;
 use gpui::{
     App, Entity, Hsla, RetainAllImageCache, Task, TextStyleRefinement, image_cache, prelude::*,
 };
-use language::{Buffer, Language, LanguageRegistry};
+use language::{Buffer, Language, LanguageRegistry, Point};
 use markdown_preview::{markdown_parser::parse_markdown, markdown_renderer::render_markdown_block};
 use nbformat::v4::{CellId, CellMetadata, CellType};
 use settings::Settings as _;
 use theme::ThemeSettings;
-use ui::{IconButtonShape, prelude::*};
+use ui::{Color, IconButtonShape, LabelSize, Tooltip, prelude::*};
 use util::ResultExt;
 
 use crate::{
@@ -586,6 +586,7 @@ impl Render for CodeCell {
                     .child(
                         div().py_1p5().w_full().child(
                             div()
+                                .relative()
                                 .flex()
                                 .size_full()
                                 .flex_1()
@@ -595,7 +596,77 @@ impl Render for CodeCell {
                                 .border_1()
                                 .border_color(cx.theme().colors().border)
                                 .bg(cx.theme().colors().editor_background)
-                                .child(div().w_full().child(self.editor.clone())),
+                                .child(div().w_full().child(self.editor.clone()))
+                                .child(
+                                    div()
+                                        .absolute()
+                                        .bottom_3()
+                                        .right_5()
+                                        .child(
+                                            Label::new(
+                                                self.editor
+                                                    .read(cx)
+                                                    .language_at(Point::default(), cx)
+                                                    .map(|l| l.name().to_string())
+                                                    .unwrap_or("Plain Text".to_string()),
+                                            )
+                                            .size(LabelSize::Small)
+                                            .color(Color::Muted),
+                                        ),
+                                )
+                                .child(
+                                    div()
+                                        .absolute()
+                                        .top_2()
+                                        .right_2()
+                                        .when(self.selected(), |this| {
+                                            this.child(
+                                                h_flex()
+                                                    .gap_1()
+                                                    .child(
+                                                        IconButton::new("run-above", IconName::ArrowUp)
+                                                            .icon_size(IconSize::Small)
+                                                            .tooltip(|window, cx| {
+                                                                Tooltip::text("Run All Above")(window, cx)
+                                                            }),
+                                                    )
+                                                    .child(
+                                                        IconButton::new(
+                                                            "run-below",
+                                                            IconName::ArrowDown,
+                                                        )
+                                                        .icon_size(IconSize::Small)
+                                                        .tooltip(|window, cx| {
+                                                            Tooltip::text("Run All Below")(window, cx)
+                                                        }),
+                                                    )
+                                                    .child(
+                                                        IconButton::new("split-cell", IconName::Split)
+                                                            .icon_size(IconSize::Small)
+                                                            .tooltip(|window, cx| {
+                                                                Tooltip::text("Split Cell")(window, cx)
+                                                            }),
+                                                    )
+                                                    .child(
+                                                        IconButton::new(
+                                                            "more-actions",
+                                                            IconName::Ellipsis,
+                                                        )
+                                                        .icon_size(IconSize::Small)
+                                                        .tooltip(|window, cx| {
+                                                            Tooltip::text("More Actions")(window, cx)
+                                                        }),
+                                                    )
+                                                    .child(
+                                                        IconButton::new("delete-cell", IconName::Trash)
+                                                            .icon_size(IconSize::Small)
+                                                            .tooltip(|window, cx| {
+                                                                Tooltip::text("Delete Cell")(window, cx)
+                                                            }),
+                                                    ),
+                                            )
+                                        }),
+                                ),
                         ),
                     ),
             )

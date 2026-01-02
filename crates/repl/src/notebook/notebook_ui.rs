@@ -546,7 +546,12 @@ impl project::ProjectItem for NotebookItem {
         let fs = project.read(cx).fs().clone();
         let languages = project.read(cx).languages().clone();
 
-        if path.path.extension().unwrap_or_default() == "ipynb" {
+        if path
+            .path
+            .extension()
+            .unwrap_or_default()
+            .eq_ignore_ascii_case("ipynb")
+        {
             Some(cx.spawn(async move |cx| {
                 let abs_path = project
                     .read_with(cx, |project, cx| project.absolute_path(&path, cx))?
